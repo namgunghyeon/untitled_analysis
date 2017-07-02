@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"lib/scanner"
 )
 
 func main() {
-		fmt.Println(scanner.Scan())
+	flag.Parse()
+	root := flag.Arg(0)
+	scanner.Scan(root)
 }
