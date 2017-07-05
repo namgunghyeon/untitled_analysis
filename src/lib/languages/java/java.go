@@ -1,0 +1,3 @@
+package java
+
+func ReadValues() {}

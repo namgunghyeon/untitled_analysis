@@ -1,5 +1,5 @@
 package model
 
-type Scann struct{
+type Scan struct{
   Paths []string
 }
