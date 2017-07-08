@@ -3,11 +3,29 @@ package parser
 import (
   "fmt"
   "lib/model"
-  "lib/languages/java"
+  "path/filepath"
 )
 
+func getLanguage(extension string) string {
+  switch extension {
+  case ".go":
+    return "go"
+  case ".java":
+    return "java"
+  case ".py":
+    return "python"
+  default:
+    return ""
+  }
+}
+
 func Parser(scan model.Scan) string {
-  fmt.Printf("%s", scan)
-  java.ReadValues()
+  for _, path := range scan.Paths {
+    extension := filepath.Ext(path)
+    language := getLanguage(extension)
+    if language != "" {
+      fmt.Println(language)
+    }
+  }
   return "Parser"
 }
