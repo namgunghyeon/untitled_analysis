@@ -4,6 +4,7 @@ import (
   "os"
   "log"
   "lib/model"
+  "fmt"
 )
 
 func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
@@ -20,7 +21,12 @@ func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
         }
       }
     }
-    scan.Paths = append(scan.Paths, path)
+    extension := filepath.Ext(path)
+    file := model.File{
+      Path: path,
+      Ext: extension,
+    }
+    scan.Files = append(scan.Files, file)
     return nil
   }
 }
@@ -28,12 +34,14 @@ func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
 func Scan(path string) model.Scan {
   ignoreDirs := []string{".bzr", ".hg", ".git"}
   scan := model.Scan{
-    Paths: []string{},
+    Files: []model.File{},
   };
+
   err := filepath.Walk(path, visitDirs(ignoreDirs, &scan))
   if err != nil {
     log.Print(err)
     return scan
   }
+  fmt.Println("%s", scan)
   return scan
 }

@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"lib/scaner"
-	"lib/parser"
+	"lib/analysis"
 )
 
 func main() {
 	flag.Parse()
 	root := flag.Arg(0)
 	scanned := scaner.Scan(root)
-	parser.Parse(scanned)
+	analysis.Start(scanned)
 }
