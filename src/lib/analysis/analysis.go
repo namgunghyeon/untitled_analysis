@@ -7,17 +7,17 @@ import (
 )
 
 type Analyzer interface {
-  ReadValues()
-  ReadFunctions()
-  ReadClasses()
-  ReadInterfaces()
+  ReadValues(file model.File)
+  ReadFunctions(file model.File)
+  ReadClasses(file model.File)
+  ReadInterfaces(file model.File)
 }
 
 func Analysis(p Analyzer, file model.File) {
-  p.ReadValues()
-  p.ReadFunctions()
-  p.ReadClasses()
-  p.ReadInterfaces()
+  p.ReadValues(file)
+  p.ReadFunctions(file)
+  p.ReadClasses(file)
+  p.ReadInterfaces(file)
 }
 
 func getLanguage(extension string) Analyzer {

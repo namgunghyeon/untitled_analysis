@@ -4,7 +4,6 @@ import (
   "os"
   "log"
   "lib/model"
-  "fmt"
 )
 
 func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
@@ -42,6 +41,5 @@ func Scan(path string) model.Scan {
     log.Print(err)
     return scan
   }
-  fmt.Println("%s", scan)
   return scan
 }

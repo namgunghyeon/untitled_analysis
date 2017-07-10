@@ -9,6 +9,6 @@ import (
 func main() {
 	flag.Parse()
 	root := flag.Arg(0)
-	scanned := scaner.Scan(root)
-	analysis.Start(scanned)
+	scanedFile := scaner.Scan(root)
+	analysis.Start(scanedFile)
 }
