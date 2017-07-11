@@ -31,7 +31,7 @@ func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
 }
 
 func Scan(path string) model.Scan {
-  ignoreDirs := []string{".bzr", ".hg", ".git"}
+  ignoreDirs := []string{".bzr", ".hg", ".git", "node_modules", "build", "test"}
   scan := model.Scan{
     Files: []model.File{},
   };

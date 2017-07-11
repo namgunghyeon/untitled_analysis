@@ -11,6 +11,5 @@ func ReadSourceCode(path string) string{
        fmt.Print(err)
    }
    str := string(b)
-   fmt.Println(str)
    return str
 }

@@ -9,3 +9,8 @@ type File struct {
 type Scan struct{
   Files []File
 }
+
+type Keyword struct {
+  Type int
+  Name string
+}
