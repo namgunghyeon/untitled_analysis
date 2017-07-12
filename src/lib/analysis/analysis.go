@@ -1,30 +1,32 @@
 package analysis
 
 import (
+  "fmt"
   "lib/model"
-  "lib/languages/python"
   "lib/languages/javascript"
 )
 
+type KeywordMap map[string][]model.Keyword
+
 type Analyzer interface {
   ReadValues(file model.File)
-  ReadFunctions(file model.File)
+  ReadFunctions(file model.File) []model.Keyword
   ReadClasses(file model.File)
   ReadInterfaces(file model.File)
 }
 
-func Analysis(p Analyzer, file model.File) {
-  p.ReadValues(file)
-  p.ReadFunctions(file)
-  p.ReadClasses(file)
-  p.ReadInterfaces(file)
+func Analysis(p Analyzer, file model.File, keyword KeywordMap) {
+  keywords := p.ReadFunctions(file)
+  for _, item := range keywords {
+    keyword["function"] = append(keyword["function"], item)
+  }
 }
 
 func getLanguage(extension string) Analyzer {
   switch extension {
   case ".go":
-    var pythonTest python.Python
-    return pythonTest
+    var javascriptTest javascript.Javascript
+    return javascriptTest
   case ".java":
     var javascriptTest javascript.Javascript
     return javascriptTest
@@ -41,8 +43,9 @@ func getLanguage(extension string) Analyzer {
 }
 
 func Start(scan model.Scan) {
+  keyword := make(KeywordMap)
   for _, file := range scan.Files {
     language := getLanguage(file.Ext)
-    Analysis(language, file)
+    Analysis(language, file, keyword)
   }
 }

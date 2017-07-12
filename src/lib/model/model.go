@@ -11,6 +11,6 @@ type Scan struct{
 }
 
 type Keyword struct {
-  Type int
+  Type string
   Name string
 }
