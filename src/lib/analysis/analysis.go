@@ -1,7 +1,6 @@
 package analysis
 
 import (
-  "fmt"
   "lib/model"
   "lib/languages/javascript"
 )
@@ -16,10 +15,13 @@ type Analyzer interface {
 }
 
 func Analysis(p Analyzer, file model.File, keyword KeywordMap) {
+  /*
   keywords := p.ReadFunctions(file)
   for _, item := range keywords {
     keyword["function"] = append(keyword["function"], item)
   }
+  */
+  p.ReadValues(file)
 }
 
 func getLanguage(extension string) Analyzer {

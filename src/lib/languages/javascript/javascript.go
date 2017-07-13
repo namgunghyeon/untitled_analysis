@@ -1,9 +1,11 @@
 package javascript
 
 import (
+  "fmt"
   "lib/parser"
   "lib/model"
   "strings"
+  "regexp"
 )
 
 type Javascript struct {
@@ -40,6 +42,28 @@ func getFuncName(funcCode string) string {
 }
 
 func (p Javascript) ReadValues(file model.File) {
+  code := parser.ReadSourceCode(file.Path)
+  codes := strings.Split(code, "\n")
+  valueTypes := []string{"var", "const", "let"}
+  valueEnds := []string{"=", ","}
+  for i := 0; i < len(codes); i++ {
+    line := codes[i]
+    for j := 0; j < len(valueTypes); j++ {
+      valueType := valueTypes[j]
+      valueStartIndex := strings.Index(line, valueType)
+
+      for k := 0; k < len(valueEnds); k++ {
+        valueEnd := valueEnds[k]
+        valueEndIndex := strings.Index(line, valueEnd)
+
+        if valueStartIndex > 0 && valueEndIndex > 0{
+          fmt.Println("valueStartIndex", valueStartIndex, "line", line)
+          match, _ := regexp.MatchString(`([A-Za-z0-9\_]+)[ \t]{0,3}\=[^<>!]`, line)
+          fmt.Println(match)
+        }
+      }
+    }
+  }
 }
 
 func (p Javascript) ReadFunctions(file model.File) []model.Keyword {
