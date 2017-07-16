@@ -1,12 +1,11 @@
 package analysis
 
 import (
-  "fmt"
   "lib/model"
   "lib/languages/javascript"
 )
 
-type KeywordMap map[string][]model.Keyword
+
 
 type Analyzer interface {
   ReadValues(file model.File) []model.Keyword
@@ -15,7 +14,7 @@ type Analyzer interface {
   ReadInterfaces(file model.File) []model.Keyword
 }
 
-func Analysis(p Analyzer, file model.File, keyword KeywordMap) {
+func Analysis(p Analyzer, file model.File, keyword model.KeywordMap) {
   functionKeywords := p.ReadFunctions(file)
   for _, item := range functionKeywords {
     keyword["function"] = append(keyword["function"], item)
@@ -31,7 +30,7 @@ func Analysis(p Analyzer, file model.File, keyword KeywordMap) {
     keyword["class"] = append(keyword["class"], item)
   }
 
-  interfaceKeywords := p.ReadClasses(file)
+  interfaceKeywords := p.ReadInterfaces(file)
   for _, item := range interfaceKeywords {
     keyword["interface"] = append(keyword["interface"], item)
   }
@@ -57,15 +56,11 @@ func getLanguage(extension string) Analyzer {
   }
 }
 
-func Start(scan model.Scan) {
-  keyword := make(KeywordMap)
+func Start(scan model.Scan) model.KeywordMap {
+  keyword := make(model.KeywordMap)
   for _, file := range scan.Files {
     language := getLanguage(file.Ext)
     Analysis(language, file, keyword)
   }
-  fmt.Println()
-  fmt.Println("function", len(keyword["function"]))
-  fmt.Println("value", len(keyword["value"]))
-  fmt.Println("class", len(keyword["class"]))
-  fmt.Println("interface", len(keyword["interface"]))
+  return keyword
 }

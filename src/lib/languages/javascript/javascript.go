@@ -86,11 +86,14 @@ func (p Javascript) ReadValues(file model.File) []model.Keyword{
     values := findTypeValue(line, valueTypes, valueEnds)
     if len(values) > 0 {
       for j := 0; j < len(values); j++ {
-        keyword := model.Keyword {
-          Type: "value",
-          Name: values[j],
+        if values[j] != "" {
+          keyword := model.Keyword {
+            Type: "value",
+            Path: file.Path,
+            Name: values[j],
+          }
+          keywords = append(keywords, keyword)
         }
-        keywords = append(keywords, keyword)
       }
     }
   }
@@ -110,6 +113,7 @@ func (p Javascript) ReadFunctions(file model.File) []model.Keyword {
       if isFuncLine(funcCode)  {
         keyword := model.Keyword {
           Type: "function",
+          Path: file.Path,
           Name: getFuncName(funcCode),
         }
         keywords = append(keywords, keyword)
@@ -143,7 +147,7 @@ func getClassLine(line string, startIndex int, endIndex int) string {
 }
 
 func isClassLine(classCode string) bool{
-  return len(strings.Split(classCode, " ")) == 2
+  return len(strings.Split(classCode, " ")) >= 2
 }
 
 func getClassName(classCode string) string {
@@ -163,6 +167,7 @@ func (p Javascript) ReadClasses(file model.File) []model.Keyword {
       if isClassLine(classCode) {
         keyword := model.Keyword {
           Type: "class",
+          Path: file.Path,
           Name: getClassName(classCode),
         }
         keywords = append(keywords, keyword)

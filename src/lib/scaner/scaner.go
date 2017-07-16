@@ -2,14 +2,12 @@ package scaner
 import (
   "path/filepath"
   "os"
-  "log"
   "lib/model"
 )
 
 func visitDirs(ignoreDirs []string, scan *model.Scan) filepath.WalkFunc {
   return func(path string, info os.FileInfo, err error) error {
     if err != nil {
-      log.Print(err)
       return nil
     }
     if info.IsDir() {
@@ -38,7 +36,6 @@ func Scan(path string) model.Scan {
 
   err := filepath.Walk(path, visitDirs(ignoreDirs, &scan))
   if err != nil {
-    log.Print(err)
     return scan
   }
   return scan

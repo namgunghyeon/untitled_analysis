@@ -12,5 +12,14 @@ type Scan struct{
 
 type Keyword struct {
   Type string
+  Path string
   Name string
+}
+
+type KeywordMap map[string][]Keyword
+
+type JsonKeyword struct {
+  Type string `json:"Type"`
+  Path string `json:"Path"`
+  Name string `json:"Name"`
 }
