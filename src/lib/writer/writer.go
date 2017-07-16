@@ -8,13 +8,19 @@ import (
   "gopkg.in/couchbase/gocb.v1"
 )
 
-type Keyword struct {
+type Project struct {
 	Project string `json:"project"`
 	Version string `json:"version"`
 	Type string `json:"type"`
   Path string `json:path`
   Name string `json:name`
   Count int `json:count`
+}
+
+type ProjectInfo struct {
+	Name string `json:"name"`
+	Language string `json:"language"`
+	Version string `json:"version"`
 }
 
 func WriteToJson(name string, version string, keyword model.KeywordMap) {
@@ -39,7 +45,7 @@ func WriteToJson(name string, version string, keyword model.KeywordMap) {
   _ = ioutil.WriteFile(name + "_" + version + ".json", jsonString, 0644)
 }
 
-func WriteToCouchbase(name string, version string, keyword model.KeywordMap) {
+func WriteToProejct(name string, version string, keyword model.KeywordMap) {
   cluster, _ := gocb.Connect("couchbase://192.168.56.213")
   bucket, _ := cluster.OpenBucket("default", "")
   for k, _ := range keyword {
@@ -47,7 +53,7 @@ func WriteToCouchbase(name string, version string, keyword model.KeywordMap) {
       item := keyword[k][i]
       fmt.Println("item", item)
       key := name + "_" + version + "_" +  item.Type + "_" +  item.Name
-      bucket.Insert(key, Keyword{
+      bucket.Insert(key, Project{
         Project: name,
         Version: version,
         Name: item.Name,
@@ -57,4 +63,15 @@ func WriteToCouchbase(name string, version string, keyword model.KeywordMap) {
       }, 0)
     }
   }
+}
+
+func WriteToProejctInfo(name string, version string, language string) {
+  cluster, _ := gocb.Connect("couchbase://192.168.56.213")
+  bucket, _ := cluster.OpenBucket("default", "")
+  key := name + "_" + version
+  bucket.Insert(key, ProjectInfo{
+    Name: name,
+    Language: language,
+    Version: version,
+  }, 0)
 }
