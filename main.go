@@ -18,5 +18,4 @@ func main() {
 	writer.WriteToJson(name, version, KeywordMap)
 	writer.WriteToProejctInfo(name, version, language)
 	writer.WriteToProejct(name, version, KeywordMap)
-
 }

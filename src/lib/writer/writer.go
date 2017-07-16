@@ -6,6 +6,7 @@ import (
   "encoding/json"
   "io/ioutil"
   "gopkg.in/couchbase/gocb.v1"
+  "config"
 )
 
 type Project struct {
@@ -46,8 +47,9 @@ func WriteToJson(name string, version string, keyword model.KeywordMap) {
 }
 
 func WriteToProejct(name string, version string, keyword model.KeywordMap) {
-  cluster, _ := gocb.Connect("couchbase://192.168.56.213")
-  bucket, _ := cluster.OpenBucket("default", "")
+  config := config.LoadCouchbase()
+  cluster, _ := gocb.Connect("couchbase://" + config.Couchbase.Host)
+  bucket, _ := cluster.OpenBucket(config.Couchbase.Project, "")
   for k, _ := range keyword {
     for i := 0; i < len(keyword[k]); i++ {
       item := keyword[k][i]
@@ -66,8 +68,9 @@ func WriteToProejct(name string, version string, keyword model.KeywordMap) {
 }
 
 func WriteToProejctInfo(name string, version string, language string) {
-  cluster, _ := gocb.Connect("couchbase://192.168.56.213")
-  bucket, _ := cluster.OpenBucket("default", "")
+  config := config.LoadCouchbase()
+  cluster, _ := gocb.Connect("couchbase://" + config.Couchbase.Host)
+  bucket, _ := cluster.OpenBucket(config.Couchbase.ProjectInfo, "")
   key := name + "_" + version
   bucket.Insert(key, ProjectInfo{
     Name: name,

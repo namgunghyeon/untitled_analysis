@@ -1,0 +1,4 @@
+[couchbase_test]
+host = "192.168.56.213"
+project = "default"
+projectInfo = "project_info"
