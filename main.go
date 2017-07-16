@@ -10,9 +10,11 @@ import (
 func main() {
 	flag.Parse()
 	root := flag.Arg(0)
-	projectName := flag.Arg(1)
+	name := flag.Arg(1)
+	version := flag.Arg(2)
 	scanedFile := scaner.Scan(root)
 	KeywordMap := analysis.Start(scanedFile)
-	writer.WriteToJson(projectName, KeywordMap)
+	writer.WriteToJson(name, version, KeywordMap)
+	writer.WriteToCouchbase(name, version, KeywordMap)
 
 }
