@@ -15,7 +15,7 @@ func main() {
 	language := flag.Arg(3)
 	scanedFile := scaner.Scan(root)
 	KeywordMap := analysis.Start(scanedFile)
-	writer.WriteToJson(name, version, KeywordMap)
 	writer.WriteToProejctInfo(name, version, language)
 	writer.WriteToProejct(name, version, KeywordMap)
+	writer.WriteToJson(name, version, KeywordMap)
 }
