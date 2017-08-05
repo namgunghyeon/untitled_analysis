@@ -1,7 +1,7 @@
 package config
 
 type Config struct {
-  Couchbase CouchbaseConfig `toml:"couchbase_test"`
+  Couchbase CouchbaseConfig `toml:"couchbase_staging"`
 }
 
 type CouchbaseConfig struct {
