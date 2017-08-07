@@ -47,7 +47,9 @@ func WriteToJson(name string, version string, keyword model.KeywordMap) {
   datas := make(map[int]model.JsonKeyword)
   for k, _ := range keyword {
     for i := 0; i < len(keyword[k]); i++ {
+
       item := keyword[k][i]
+
       datas[i] = model.JsonKeyword{Type: item.Type, Name: item.Name, Path: item.Path}
     }
   }
