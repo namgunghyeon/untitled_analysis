@@ -6,6 +6,9 @@ import (
   "encoding/json"
   "io/ioutil"
   "gopkg.in/couchbase/gocb.v1"
+  _ "github.com/lib/pq"
+  "database/sql"
+  "log"
   "config"
 )
 
@@ -130,4 +133,48 @@ func WriteToProejctInfo(name string, version string, language string) {
     Language: language,
     Version: version,
   }, 0)
+}
+
+func CockroacWriteToKeywordIndex(keyword model.KeywordMap) {
+  db, err := sql.Open("postgres", "postgresql://root@104.156.238.187:26257/untitled?sslmode=disable")
+  if err != nil {
+      log.Fatal("error connecting to the database: ", err)
+  }
+  for k, _ := range keyword {
+    for i := 0; i < len(keyword[k]); i++ {
+      item := keyword[k][i]
+      query := "INSERT INTO keyword_index(keyword) VALUES ('"+ item.Name + "') ON CONFLICT (keyword) DO NOTHING";
+      fmt.Println("query", query)
+      _, err := db.Exec(query);
+      if err != nil {
+        defer func() {
+           if err := recover(); err != nil {
+               fmt.Println(err)
+           }
+       }()
+      }
+    }
+  }
+}
+
+func CockroacWriteToKeyword(name string, version string, keyword model.KeywordMap) {
+  db, err := sql.Open("postgres", "postgresql://root@104.156.238.187:26257/untitled?sslmode=disable")
+  if err != nil {
+      log.Fatal("error connecting to the database: ", err)
+  }
+  for k, _ := range keyword {
+    for i := 0; i < len(keyword[k]); i++ {
+      item := keyword[k][i]
+      query := "INSERT INTO keyword(keyword_index, project, version, type, path, count) VALUES ('" + item.Name + "', '" + name + "', '" + version + "', '" + item.Type + "', '" + item.Path + "', 0)";
+      fmt.Println("query", query)
+      _, err := db.Exec(query);
+      if err != nil {
+        defer func() {
+           if err := recover(); err != nil {
+               fmt.Println(err)
+           }
+       }()
+      }
+    }
+  }
 }
