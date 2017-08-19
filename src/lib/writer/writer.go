@@ -180,12 +180,26 @@ func CockroacWriteToKeyword(name string, version string, keyword model.KeywordMa
   }
 }
 
+func concatProejct(project string, name string) string{
+    if project != "" {
+      project += ", " + name
+    } else {
+      project += name
+    }
+    return project
+}
+
+func errorHandle(err error) {
+    if err := recover(); err != nil {
+        fmt.Println("error", err)
+    }
+}
+
 func CockroacWriteToKeywordIndexProjectMeta(name string, keyword model.KeywordMap) {
   db, err := sql.Open("postgres", "postgresql://root@104.156.238.187:26257/untitled?sslmode=disable")
   if err != nil {
       log.Fatal("error connecting to the database: ", err)
   }
-
 
   for k, _ := range keyword {
     for i := 0; i < len(keyword[k]); i++ {
@@ -194,13 +208,7 @@ func CockroacWriteToKeywordIndexProjectMeta(name string, keyword model.KeywordMa
       selectQuery := "SELECT keyword_index, project FROM keyword_index_project_meta where keyword_index = '" + item.Name + "'";
       rows, err := db.Query(selectQuery)
       fmt.Println("query", selectQuery)
-      if err != nil {
-        defer func() {
-           if err := recover(); err != nil {
-               fmt.Println("error", err)
-           }
-       }()
-      }
+      defer errorHandle(err)
       defer rows.Close()
       if (rows == nil) {
         continue
@@ -209,35 +217,18 @@ func CockroacWriteToKeywordIndexProjectMeta(name string, keyword model.KeywordMa
       var keyword_index string
       var project string
       for rows.Next() {
-
-        if err := rows.Scan(&keyword_index, &project); err != nil {
-          defer func() {
-             if err := recover(); err != nil {
-                 fmt.Println(err)
-             }
-         }()
-        }
+        err := rows.Scan(&keyword_index, &project)
+        errorHandle(err)
       }
       isContain := strings.Contains(project, name)
       if isContain {
         continue
       }
-      if project != "" {
-        project += ", " + name
-      } else {
-        project += name
-      }
-
+      project = concatProejct(project, name)
       insertQuery := "INSERT INTO keyword_index_project_meta(keyword_index, project) VALUES ('" + item.Name + "', '" + project + "') ON CONFLICT (keyword_index) DO UPDATE SET project = '" + project + "'"
       fmt.Println("query", insertQuery)
       _, insertErr := db.Exec(insertQuery);
-      if insertErr != nil {
-        defer func() {
-           if insertErr := recover(); insertErr != nil {
-               fmt.Println(insertErr)
-           }
-       }()
-      }
+      errorHandle(insertErr)
     }
   }
 }
