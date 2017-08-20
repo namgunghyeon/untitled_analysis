@@ -190,6 +190,9 @@ func concatProejct(project string, name string) string{
 }
 
 func errorHandle(err error) {
+    if err != nil {
+      fmt.Println("error", err)
+    }
     if err := recover(); err != nil {
         fmt.Println("error", err)
     }
@@ -231,4 +234,16 @@ func CockroacWriteToKeywordIndexProjectMeta(name string, keyword model.KeywordMa
       errorHandle(insertErr)
     }
   }
+}
+
+func CockroacWriteToProject(project string, color string) {
+  db, err := sql.Open("postgres", "postgresql://root@104.156.238.187:26257/untitled?sslmode=disable")
+  if err != nil {
+      log.Fatal("error connecting to the database: ", err)
+  }
+
+  query := "INSERT INTO project(name, color) VALUES ('" + project + "', '" + color + "')";
+  fmt.Println("query", query)
+  _, insertErr := db.Exec(query);
+  defer errorHandle(insertErr)
 }
